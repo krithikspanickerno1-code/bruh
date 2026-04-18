@@ -23,12 +23,28 @@ obstacle2.style.borderRadius = '5px';
 obstacle2.style.right = '-30px';
 document.getElementById('game').appendChild(obstacle2);
 
-// Initial horizontal positions (on the right side, off-screen)
+// Initial horizontal positions (distance from LEFT edge)
 let obstacle1Left = 600;
 let obstacle2Left = 900;
 
 const OBSTACLE_WIDTH = 30;
-const MIN_GAP = 180; // Minimum horizontal distance between obstacles to allow jumps
+const GAME_WIDTH = 600;
+
+// Calculate maximum jump distance horizontally
+// Player jumps with initial velocity 15 and gravity 0.8
+// Time to reach max height: t_up = velocity / gravity
+// Total jump time = 2 * t_up
+// Horizontal speed = 9 units per frame (obstacle speed)
+// So, max jump distance = horizontal speed * total jump frames
+
+const jumpInitialVelocity = 15;
+const jumpGravity = 0.8;
+const obstacleSpeed = 9;
+
+// Calculate jump duration in frames
+const jumpDurationFrames = Math.ceil((2 * jumpInitialVelocity) / jumpGravity);
+// Minimum gap = jumpDurationFrames * obstacleSpeed + some margin
+const MIN_GAP = jumpDurationFrames * obstacleSpeed + 10; 
 
 window.onload = () => {
   document.body.setAttribute('tabindex', '0');
@@ -38,7 +54,7 @@ window.onload = () => {
 function jump() {
   if (!isJumping && !gameOver) {
     isJumping = true;
-    velocity = 15;
+    velocity = jumpInitialVelocity;
   }
 }
 
@@ -54,17 +70,16 @@ document.addEventListener('click', e => {
   jump();
 });
 
-// Clamp function helper
+// Clamp helper
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-// Respawn obstacle ensuring enough gap
+// Respawn obstacle making sure gap with other obstacle remains at least MIN_GAP
 function respawnObstacle(currentObstacleLeft, otherObstacleLeft) {
-  // Random spawn between 600 and 1000 px from left boundary
-  let newPos = 600 + Math.random() * 400;
+  let newPos = GAME_WIDTH + Math.random() * 400;
 
-  // If too close to other obstacle, push it ahead
+  // Ensure obstacles are always at least MIN_GAP apart horizontally
   if (Math.abs(newPos - otherObstacleLeft) < MIN_GAP) {
     if (newPos < otherObstacleLeft) {
       newPos = otherObstacleLeft - MIN_GAP;
@@ -73,16 +88,14 @@ function respawnObstacle(currentObstacleLeft, otherObstacleLeft) {
     }
   }
 
-  // Clamp within reasonable bounds to stay offscreen right side
-  newPos = clamp(newPos, 600, 1200);
-
+  newPos = clamp(newPos, GAME_WIDTH, GAME_WIDTH + 600);
   return newPos;
 }
 
 function update() {
   if (gameOver) return;
 
-  // Gravity effect on jump
+  // Gravity/jump update
   velocity -= gravity;
   playerBottom += velocity;
   if (playerBottom <= 0) {
@@ -92,8 +105,8 @@ function update() {
   }
   player.style.bottom = playerBottom + 'px';
 
-  // Move obstacle1
-  obstacle1Left -= 9;
+  // Move obstacles left by obstacleSpeed pixels per frame
+  obstacle1Left -= obstacleSpeed;
   if (obstacle1Left < -OBSTACLE_WIDTH) {
     obstacle1Left = respawnObstacle(obstacle1Left, obstacle2Left);
     score++;
@@ -101,8 +114,7 @@ function update() {
   }
   obstacle1.style.left = obstacle1Left + 'px';
 
-  // Move obstacle2
-  obstacle2Left -= 9;
+  obstacle2Left -= obstacleSpeed;
   if (obstacle2Left < -OBSTACLE_WIDTH) {
     obstacle2Left = respawnObstacle(obstacle2Left, obstacle1Left);
     score++;
@@ -114,7 +126,7 @@ function update() {
   const obstacle1Rect = obstacle1.getBoundingClientRect();
   const obstacle2Rect = obstacle2.getBoundingClientRect();
 
-  // Collision detection obstacle1
+  // Collision detection for obstacle1
   if (
     playerRect.right > obstacle1Rect.left &&
     playerRect.left < obstacle1Rect.right &&
@@ -124,7 +136,7 @@ function update() {
     messageEl.textContent = 'Game Over! Refresh to play again.';
   }
 
-  // Collision detection obstacle2
+  // Collision detection for obstacle2
   if (
     playerRect.right > obstacle2Rect.left &&
     playerRect.left < obstacle2Rect.right &&
@@ -134,7 +146,7 @@ function update() {
     messageEl.textContent = 'Game Over! Refresh to play again.';
   }
 
-  requestAnimationFrame(update);
+  if (!gameOver) requestAnimationFrame(update);
 }
 
 update();
