@@ -33,14 +33,22 @@ body {
   border-radius: 5px;
 }
 
-#obstacle {
+#obstacle,
+#obstacle2 {
   position: absolute;
   bottom: 0;
   width: 30px;
   height: 50px;
   background: #E74C3C;
-  right: -30px;
   border-radius: 5px;
+}
+
+#obstacle {
+  right: -30px;
+}
+
+#obstacle2 {
+  right: -30px;
 }
 
 #score {
