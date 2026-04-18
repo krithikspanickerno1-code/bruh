@@ -1,0 +1,44 @@
+body{
+    background-color:#000000; color:#1b34b2
+}
+.button-1{
+    background-color:#3481ed; color:#ffffff
+}
+.button-2{
+    background-color:#369e42; color:#ffffff
+}
+.button-3{
+    background-color:#fc1408; color:#ffffff
+}
+.button-3_1{
+    background-color:#fc1408;color:#000000
+}
+.button-4{
+    background-color:#ede726; color:#000000
+}
+.button-5{
+    background-color:#fa4646; color:#ffffff
+}
+.button-6{
+    background-color:#6119fc; color:#ffffff
+}
+.button-7{
+    background-color:#3af022; color:#ffffff
+}
+.button-8{
+    background-color:#f2cb07; color:#000000
+}
+.button-9{
+    background-color:#07def2; color:#ffffff
+}
+
+.close-button{
+    font-size:30px;width:40px ;height:50px ;
+    background-color:red ;color:white ;
+    border-radius:10px
+}
+.calculator{
+    padding:5px; width:40px; height:40px; 
+    background-color:#ffffff; color:#000000;
+    font-size:30px
+}
