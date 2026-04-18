@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('../../pngfolder/pongygalaxy.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+#pongCanvas {
+  background: rgba(0, 0, 0, 0.6);
+  display: block;
+  border: 3px solid #5C6AC4;
+  border-radius: 10px;
+}
